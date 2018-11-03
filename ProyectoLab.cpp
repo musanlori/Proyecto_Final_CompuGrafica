@@ -2,7 +2,7 @@
 //************************************************************//
 //************************************************************//
 //************** Alumno (s): *********************************//
-//*************	Bustamante Valdez Jéssica Dayana		******//
+//*************	Bustamante Valdez JÃ©ssica Dayana		******//
 //*************	Santiago Lopez Ricardo					******//
 //************* Proyecto Final de Laboraotrio*****************//
 //************************************************************//
@@ -18,6 +18,8 @@ int deltaTime = 0;
 
 //Para dibujar el edificio 
 CFiguras f_edificio; 
+CFiguras f_base;
+CTexture concreto;
 
 CCamera objCamera;	//Create objet Camera
 
@@ -31,6 +33,7 @@ GLfloat Position2[]= { 0.0f, 0.0f, -5.0f, 1.0f };			// Light Position
 CTexture text1;
 CTexture text2;
 CTexture text3;	//Flecha
+
 
 CTexture tree;
 
@@ -132,6 +135,10 @@ void InitGL ( GLvoid )     // Inicializamos parametros
 	tree.BuildGLTexture();
 	tree.ReleaseImage();
 
+	concreto.LoadTGA("concreto.tga");
+	concreto.BuildGLTexture();
+	concreto.ReleaseImage();
+
 
 	//END NEW//////////////////////////////
 
@@ -163,8 +170,8 @@ void display ( void )   // Creamos la funcion donde se dibuja
 				glEnable(GL_LIGHTING);
 				glColor3f(1.0,1.0,1.0);
 			glPopMatrix();
+			
 			//EJE DE REFERENCIA
-
 				glBegin(GL_LINES);
 				glVertex3f(0.0, 0.0, 0.0);
 				glVertex3f(100.0, 0.0, 0.0);
@@ -174,48 +181,86 @@ void display ( void )   // Creamos la funcion donde se dibuja
 				glVertex3f(0.0, 0.0, 100.0);
 				glEnd();
 
-				glColor3f(1.0, 0.0, 1.0);
-				f_edificio.prisma(24.0,1.0,10.0,0.0);		//Base
+				glColor3f(0.16, 0.30, 0.0);
+				f_base.prisma(20.0,1.0,10.0,0.0);		//Base
+				glPushMatrix();
+					glTranslatef(-15.0,0.0,-2.0);			//Base Izq
+					glColor3f(0.16, 0.30, 0.0);
+					f_base.prisma(4.0,1.0,7.0,0.0);
+				glPopMatrix();
+				 
+				glPushMatrix();
+					glTranslatef(-7.75, 0.0, -15.5);			//Base Izq trasera
+					glColor3f(0.16, 0.30, 0.0);
+					f_base.prisma(9.0, 1.0, 7.0, 0.0);
+				glPopMatrix();
 
 				glPushMatrix();
-					glTranslatef(0.0, 3.0, 1.5);
-					glColor3f(0.0, 1.0, 1.0);
-					f_edificio.prisma(4.0, 6, 5.0, 0.0);		//Entrada
+					glTranslatef(15.0, 0.0, -2.0);			//Base Der
+					glColor3f(0.16, 0.30, 0.0);
+					f_base.prisma(4.0, 1.0, 7.0, 0.0);
 				glPopMatrix();
+
+				glPushMatrix();
+					glTranslatef(7.75, 0.0, -15.5);			//Base Der trasera
+					glColor3f(0.16, 0.30, 0.0);
+					f_base.prisma(9.0, 1.0, 7.0, 0.0);
+				glPopMatrix();
+
+				glPushMatrix();
+				glTranslatef(-15.0, 0.0, 4.0);			//Base Izq delantera
+				glColor3f(0.16, 0.30, 0.0);
+				f_base.prisma(4.0, 1.0, 3.5, 0.0);
+				glPopMatrix();
+
+				glPushMatrix();
+				glTranslatef(15.0, 0.0, 4.0);			//Base Der delantera
+				glColor3f(0.16, 0.30, 0.0);
+				f_base.prisma(4.0, 1.0, 3.5, 0.0);
+				glPopMatrix();
+
+				glPushMatrix();
+				glTranslatef(-5.0, 0.0, 12.5);			//Base Izq Del
+				glColor3f(0.16, 0.30, 0.0);
+				f_base.prisma(6.0, 1.0, 5.0, 0.0);
+				glPopMatrix();
+
+				glPushMatrix();
+				glTranslatef(5.0, 0.0, 12.5);			//Base Der Del
+				glColor3f(0.16, 0.30, 0.0);
+				f_base.prisma(6.0, 1.0, 5.0, 0.0);
+				glPopMatrix();
+
+				glColor3f(1.0,1.0,1.0);
+				glPushMatrix();
+					glTranslatef(0.0, 3.0, 1.5);
+					f_edificio.prisma(4.0, 6, 5.0, concreto.GLindex);		//Entrada
+				glPopMatrix();
+
 				glPushMatrix();
 					glTranslatef(-6.0, 3.0, 0.0);
-					glColor3f(1.0, 1.0, 0.0);
-					f_edificio.prisma(8.0,6.0,8.0,0.0);			//Planta baja Izq
+					f_edificio.prisma(8.0,6.0,8.0, concreto.GLindex);			//Planta baja Izq
 					glTranslatef(0.0,4.75, 0.0);
-					glColor3f(1.0, 0.0, 1.0);
-					f_edificio.prisma(8.0, 3.5, 8.0, 0.0);		//Primer piso Izq
+					f_edificio.prisma(8.0, 3.5, 8.0, concreto.GLindex);		//Primer piso Izq
 					glTranslatef(0.0, 3.5, 0.0);
-					glColor3f(0.0, 1.0, 1.0);
-					f_edificio.prisma(8.0, 3.5, 8.0, 0.0);		//Segundo piso Izq
+					f_edificio.prisma(8.0, 3.5, 8.0, concreto.GLindex);		//Segundo piso Izq
 					glTranslatef(0.0, 3.5, 0.0);
-					glColor3f(0.0, 0.0, 1.0);
-					f_edificio.prisma(8.0, 3.5, 8.0, 0.0);		//Tercer piso Izq
+					f_edificio.prisma(8.0, 3.5, 8.0, concreto.GLindex);		//Tercer piso Izq
 					glTranslatef(0.0, 4.0, 0.0);
-					glColor3f(0.0, 1.0, 1.0);
-					f_edificio.prisma(8.0, 4.5, 8.0, 0.0);		//Cuarto piso Izq
+					f_edificio.prisma(8.0, 4.5, 8.0, concreto.GLindex);		//Cuarto piso Izq
 				glPopMatrix();
 
 				glPushMatrix();
 				glTranslatef(6.0, 3.0, 0.0);
-				glColor3f(1.0, 1.0, 0.0);
-				f_edificio.prisma(8.0, 6.0, 8.0, 0.0);		//Planta baja Der
+				f_edificio.prisma(8.0, 6.0, 8.0, concreto.GLindex);		//Planta baja Der
 				glTranslatef(0.0, 4.75, 0.0);
-				glColor3f(1.0, 0.0, 1.0);
-				f_edificio.prisma(8.0, 3.5, 8.0, 0.0);		//Primer piso Der
+				f_edificio.prisma(8.0, 3.5, 8.0, concreto.GLindex);		//Primer piso Der
 				glTranslatef(0.0, 3.5, 0.0);
-				glColor3f(0.0, 1.0, 1.0);
-				f_edificio.prisma(8.0, 3.5, 8.0, 0.0);		//Segundo piso Der
+				f_edificio.prisma(8.0, 3.5, 8.0, concreto.GLindex);		//Segundo piso Der
 				glTranslatef(0.0, 3.5, 0.0);
-				glColor3f(0.0, 0.0, 1.0);
-				f_edificio.prisma(8.0, 3.5, 8.0, 0.0);		//Tercer piso Der
+				f_edificio.prisma(8.0, 3.5, 8.0, concreto.GLindex);		//Tercer piso Der
 				glTranslatef(0.0, 4.0, 0.0);
-				glColor3f(0.0, 1.0, 1.0);
-				f_edificio.prisma(8.0, 4.5, 8.0, 0.0);		//Cuarto piso Der
+				f_edificio.prisma(8.0, 4.5, 8.0, concreto.GLindex);		//Cuarto piso Der
 				glPopMatrix();
 
 				
@@ -327,14 +372,14 @@ int main ( int argc, char** argv )   // Main Function
 
   glutInit            (&argc, argv); // Inicializamos OpenGL
   glutInitDisplayMode (GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH); // Display Mode (Clores RGB y alpha | Buffer Doble )
-  glutInitWindowSize  (2000, 2000);	// Tamaño de la Ventana
+  glutInitWindowSize  (2000, 2000);	// TamaÃ±o de la Ventana
   glutInitWindowPosition (0, 0);	//Posicion de la Ventana
   glutCreateWindow    ("Edificio Q"); // Nombre de la Ventana
   //glutFullScreen     ( );         // Full Screen
   InitGL ();						// Parametros iniciales de la aplicacion
-  glutDisplayFunc     ( display );  //Indicamos a Glut función de dibujo
-  glutReshapeFunc     ( reshape );	//Indicamos a Glut función en caso de cambio de tamano
-  glutKeyboardFunc    ( keyboard );	//Indicamos a Glut función de manejo de teclado
+  glutDisplayFunc     ( display );  //Indicamos a Glut funciÃ³n de dibujo
+  glutReshapeFunc     ( reshape );	//Indicamos a Glut funciÃ³n en caso de cambio de tamano
+  glutKeyboardFunc    ( keyboard );	//Indicamos a Glut funciÃ³n de manejo de teclado
   glutSpecialFunc     ( arrow_keys );	//Otras
   glutIdleFunc		  ( animacion );
 
