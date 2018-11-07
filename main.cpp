@@ -28,78 +28,19 @@ GLfloat Position[] = { 0.0f, 7.0f, -5.0f, 0.0f };			// Light Position
 GLfloat Position2[] = { 0.0f, 0.0f, -5.0f, 1.0f };			// Light Position
 //texturas
 CTexture Cielo_Text;
-CTexture tree;
+CTexture Arbol_Tex;
+CTexture Pino_Tex;
 CTexture plaza_Piso;
 CTexture Cont_jard;
 CTexture pasto_Jard;
+CTexture lamp_tex;
 
 //formas
 CFiguras sky;
 CFiguras lRecJard;
-
-void arbol()
-{
-	glPushMatrix();
-	glDisable(GL_LIGHTING);
-	glEnable(GL_ALPHA_TEST);
-	//glDisable(GL_DEPTH_TEST);   // Turn Depth Testing Off
-	glAlphaFunc(GL_GREATER, 0.1);
-	//glEnable(GL_BLEND);     // Turn Blending On
-	//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glBindTexture(GL_TEXTURE_2D, tree.GLindex);
-	glBegin(GL_QUADS); //plano
-	glColor3f(1.0, 1.0, 1.0);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0, 20.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0, 20.0, 0.0);
-	glEnd();
-	glPopMatrix();
-
-	glPushMatrix();
-	glRotatef(45, 0, 1, 0);
-	glBegin(GL_QUADS); //plano
-	glColor3f(1.0, 1.0, 1.0);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0, 20.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0, 20.0, 0.0);
-	glEnd();
-	glPopMatrix();
-
-	glPushMatrix();
-	glRotatef(-45, 0, 1, 0);
-	glBegin(GL_QUADS); //plano
-	glColor3f(1.0, 1.0, 1.0);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0, 20.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0, 20.0, 0.0);
-	glEnd();
-	glPopMatrix();
-
-	glPushMatrix();
-	glRotatef(90, 0, 1, 0);
-	glBegin(GL_QUADS); //plano
-	glColor3f(1.0, 1.0, 1.0);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0, 20.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0, 20.0, 0.0);
-	glEnd();
-	glDisable(GL_ALPHA_TEST);
-	//glDisable(GL_BLEND);        // Turn Blending Off
-	//glEnable(GL_DEPTH_TEST);    // Turn Depth Testing On
-	glEnable(GL_LIGHTING);
-
-	glPopMatrix();
-}
-
-
+CFiguras Arbol;
+CFiguras Pino;
+CFiguras Lampara;
 
 void InitGL(GLvoid)     // Inicializamos parametros
 {
@@ -137,17 +78,25 @@ void InitGL(GLvoid)     // Inicializamos parametros
 	pasto_Jard.LoadBMP("Texturas/pasto.bmp");
 	pasto_Jard.BuildGLTexture();
 	pasto_Jard.ReleaseImage();
-	//textura Arbol Ejemplo
-	tree.LoadTGA("Texturas/tree01.tga");
-	tree.BuildGLTexture();
-	tree.ReleaseImage();
+	//textura Arbol
+	Arbol_Tex.LoadTGA("Texturas/arbol.tga");
+	Arbol_Tex.BuildGLTexture();
+	Arbol_Tex.ReleaseImage();
+	//textura pino
+	Pino_Tex.LoadTGA("Texturas/pino.tga");
+	Pino_Tex.BuildGLTexture();
+	Pino_Tex.ReleaseImage();
+	//textura lampara
+	lamp_tex.LoadTGA("Texturas/Lampara.tga");
+	lamp_tex.BuildGLTexture();
+	lamp_tex.ReleaseImage();
 
 	//END NEW//////////////////////////////
 
 	objCamera.Position_Camera(0, 2.5f, 3, 0, 2.5f, 0, 0, 1, 0);
 
 }
-
+//funcion que dibuja el terreno
 void terreno() {
 	glDisable(GL_LIGHTING);
 	//piso
@@ -286,161 +235,161 @@ void terreno() {
 
 	//jardinera lateral_2 izquierda
 	glPushMatrix();
-	glTranslatef(-15.0, 0.0, 0.0);
-	lRecJard.prisma(1.0, 4.0, 0.25, Cont_jard.GLindex);
-	glTranslatef(-2.0, 0.0, 5.0);
-	glRotatef(90, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 10.0, 0.25, Cont_jard.GLindex);
-	//definicion de las curvas de la jardinera
-	glPushMatrix();
-	glTranslatef(3.5, 0.0, 4.5);
-	glRotatef(18.435, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 3.1623, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(1.0, 0.0, 5.5);
-	glRotatef(26.655, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(-0.5, 0.0, 6.5);
-	glRotatef(45, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 1.4142, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(-2.0, 0.0, 6.0);
-	glRotatef(-45, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.8284, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(-3.5, 0.0, 4.0);
-	glRotatef(-63.4353, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(-4.5, 0.0, 1.5);
-	glRotatef(-71.5652, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 3.1623, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPopMatrix();
-
-	//jardinera Frontal Derecha
-	glPushMatrix();
-	glTranslatef(2.0, 0.0, 12.5);
-	glRotatef(90, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 5.0, 0.25, Cont_jard.GLindex);
-	glTranslatef(-2.5, 0.0, 3.0);
-	glRotatef(-90, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 6.0, 0.25, Cont_jard.GLindex);
-	glPushMatrix();
-	glTranslatef(3.5, 0.0, -1.0);
-	glRotatef(63.435, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(4.0, 0.0, -3.0);
-	glRotatef(90, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.0, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(3.5, 0.0, -5.0);
-	glRotatef(-63.435, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(2.5, 0.0, -6.5);
-	glRotatef(-45, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 1.4142, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(1.0, 0.0, -6.5);
-	glRotatef(26.5650, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(-1.5, 0.0, -5.5);
-	glRotatef(18.435, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 3.1623, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
+		glTranslatef(-15.0, 0.0, 0.0);
+		lRecJard.prisma(1.0, 4.0, 0.25, Cont_jard.GLindex);
+		glTranslatef(-2.0, 0.0, 5.0);
+		glRotatef(90, 0.0, 1.0, 0.0);
+		lRecJard.prisma(1.0, 10.0, 0.25, Cont_jard.GLindex);
+		//definicion de las curvas de la jardinera
+		glPushMatrix();
+			glTranslatef(3.5, 0.0, 4.5);
+			glRotatef(18.435, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 3.1623, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(1.0, 0.0, 5.5);
+			glRotatef(26.655, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-0.5, 0.0, 6.5);
+			glRotatef(45, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 1.4142, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-2.0, 0.0, 6.0);
+			glRotatef(-45, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.8284, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-3.5, 0.0, 4.0);
+			glRotatef(-63.4353, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-4.5, 0.0, 1.5);
+			glRotatef(-71.5652, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 3.1623, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
 	glPopMatrix();
 
 	//jardinera Frontal Derecha
 	glPushMatrix();
-	glTranslatef(2.0, 0.0, 12.5);
-	glRotatef(90, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 5.0, 0.25, Cont_jard.GLindex);
-	glTranslatef(-2.5, 0.0, 3.0);
-	glRotatef(-90, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 6.0, 0.25, Cont_jard.GLindex);
-	glPushMatrix();
-	glTranslatef(3.5, 0.0, -1.0);
-	glRotatef(63.435, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
+		glTranslatef(2.0, 0.0, 12.5);
+		glRotatef(90, 0.0, 1.0, 0.0);
+		lRecJard.prisma(1.0, 5.0, 0.25, Cont_jard.GLindex);
+		glTranslatef(-2.5, 0.0, 3.0);
+		glRotatef(-90, 0.0, 1.0, 0.0);
+		lRecJard.prisma(1.0, 6.0, 0.25, Cont_jard.GLindex);
+		glPushMatrix();
+			glTranslatef(3.5, 0.0, -1.0);
+			glRotatef(63.435, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(4.0, 0.0, -3.0);
+			glRotatef(90, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.0, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(3.5, 0.0, -5.0);
+			glRotatef(-63.435, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(2.5, 0.0, -6.5);
+			glRotatef(-45, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 1.4142, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(1.0, 0.0, -6.5);
+			glRotatef(26.5650, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-1.5, 0.0, -5.5);
+			glRotatef(18.435, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 3.1623, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
 	glPopMatrix();
+
+	//jardinera Frontal Derecha
 	glPushMatrix();
-	glTranslatef(4.0, 0.0, -3.0);
-	glRotatef(90, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.0, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(3.5, 0.0, -5.0);
-	glRotatef(-63.435, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(2.5, 0.0, -6.5);
-	glRotatef(-45, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 1.4142, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(1.0, 0.0, -6.5);
-	glRotatef(26.5650, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(-1.5, 0.0, -5.5);
-	glRotatef(18.435, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 3.1623, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
+		glTranslatef(2.0, 0.0, 12.5);
+		glRotatef(90, 0.0, 1.0, 0.0);
+		lRecJard.prisma(1.0, 5.0, 0.25, Cont_jard.GLindex);
+		glTranslatef(-2.5, 0.0, 3.0);
+		glRotatef(-90, 0.0, 1.0, 0.0);
+		lRecJard.prisma(1.0, 6.0, 0.25, Cont_jard.GLindex);
+		glPushMatrix();
+			glTranslatef(3.5, 0.0, -1.0);
+			glRotatef(63.435, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(4.0, 0.0, -3.0);
+			glRotatef(90, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.0, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(3.5, 0.0, -5.0);
+			glRotatef(-63.435, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(2.5, 0.0, -6.5);
+			glRotatef(-45, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 1.4142, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(1.0, 0.0, -6.5);
+			glRotatef(26.5650, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-1.5, 0.0, -5.5);
+			glRotatef(18.435, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 3.1623, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
 	glPopMatrix();
 	//jardinera Frontal izquierda
 	glPushMatrix();
-	glTranslatef(-2.0, 0.0, 12.5);
-	glRotatef(90, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 5.0, 0.25, Cont_jard.GLindex);
-	glTranslatef(-2.5, 0.0, -3.0);
-	glRotatef(-90, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 6.0, 0.25, Cont_jard.GLindex);
-	glPushMatrix();
-	glTranslatef(-3.5, 0.0, -1.0);
-	glRotatef(-63.435, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(-4.0, 0.0, -3.0);
-	glRotatef(90, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.0, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(-3.5, 0.0, -5.0);
-	glRotatef(63.435, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(-2.5, 0.0, -6.5);
-	glRotatef(45, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 1.4142, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(-1.0, 0.0, -6.5);
-	glRotatef(-26.5650, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(1.5, 0.0, -5.5);
-	glRotatef(-18.435, 0.0, 1.0, 0.0);
-	lRecJard.prisma(1.0, 3.1623, 0.25, Cont_jard.GLindex);
-	glPopMatrix();
+		glTranslatef(-2.0, 0.0, 12.5);
+		glRotatef(90, 0.0, 1.0, 0.0);
+		lRecJard.prisma(1.0, 5.0, 0.25, Cont_jard.GLindex);
+		glTranslatef(-2.5, 0.0, -3.0);
+		glRotatef(-90, 0.0, 1.0, 0.0);
+		lRecJard.prisma(1.0, 6.0, 0.25, Cont_jard.GLindex);
+		glPushMatrix();
+			glTranslatef(-3.5, 0.0, -1.0);
+			glRotatef(-63.435, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-4.0, 0.0, -3.0);
+			glRotatef(90, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.0, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-3.5, 0.0, -5.0);
+			glRotatef(63.435, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-2.5, 0.0, -6.5);
+			glRotatef(45, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 1.4142, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-1.0, 0.0, -6.5);
+			glRotatef(-26.5650, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 2.2361, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(1.5, 0.0, -5.5);
+			glRotatef(-18.435, 0.0, 1.0, 0.0);
+			lRecJard.prisma(1.0, 3.1623, 0.25, Cont_jard.GLindex);
+		glPopMatrix();
 	glPopMatrix();
 	//jardinera central
 	glPushMatrix();
@@ -607,7 +556,89 @@ void terreno() {
 		glEnd();
 	glPopMatrix();
 }
-
+//funcion que dibuja un arbol en la posicion especificada.
+void arbol(float x, float y, float z) {
+	glDisable(GL_LIGHTING);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.1);
+	//planos para la copa
+	glPushMatrix();//1
+		glTranslatef(x, y, z);
+		Arbol.prisma(7.0, 2.0, 0.0, Arbol_Tex.GLindex);
+	glPopMatrix();
+	glPushMatrix();//2
+		glTranslatef(x, y, z);
+		glRotatef(45, 0.0, 1.0, 0.0);
+		Arbol.prisma(7.0, 2.0, 0.0, Arbol_Tex.GLindex);
+	glPopMatrix();
+	glPushMatrix();//3
+		glTranslatef(x, y, z);
+		glRotatef(90, 0.0, 1.0, 0.0);
+		Arbol.prisma(7.0, 2.0, 0.0, Arbol_Tex.GLindex);
+	glPopMatrix();
+	glPushMatrix();//4
+		glTranslatef(x, y, z);
+		glRotatef(135, 0.0, 1.0, 0.0);
+		Arbol.prisma(7.0, 2.0, 0.0, Arbol_Tex.GLindex);
+	glPopMatrix();
+	glDisable(GL_ALPHA_TEST);
+	glEnable(GL_LIGHTING);
+}
+//funcion que dibuja un pino en la posicion especificada
+void pino(float x, float y, float z) {
+	glDisable(GL_LIGHTING);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.1);
+	//planos para la copa
+	glPushMatrix();//1
+		glTranslatef(x, y, z);
+		Pino.prisma(7.0, 2.0, 0.0, Pino_Tex.GLindex);
+	glPopMatrix();
+	glPushMatrix();//2
+	glTranslatef(x, y, z);
+		glRotatef(45, 0.0, 1.0, 0.0);
+		Arbol.prisma(7.0, 2.0, 0.0, Pino_Tex.GLindex);
+	glPopMatrix();
+	glPushMatrix();//3
+		glTranslatef(x, y, z);
+		glRotatef(90, 0.0, 1.0, 0.0);
+		Arbol.prisma(7.0, 2.0, 0.0, Pino_Tex.GLindex);
+	glPopMatrix();
+	glPushMatrix();//4
+		glTranslatef(x, y, z);
+		glRotatef(135, 0.0, 1.0, 0.0);
+		Arbol.prisma(7.0, 2.0, 0.0, Pino_Tex.GLindex);
+	glPopMatrix();
+	glDisable(GL_ALPHA_TEST);
+	glEnable(GL_LIGHTING);
+}
+void lampara(float x, float y, float z) {
+	glDisable(GL_LIGHTING);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.1);
+	//planos para la textura
+	glPushMatrix();//1
+		glTranslatef(x, y, z);
+		Lampara.prisma(5.0, 1.5, 0.0, lamp_tex.GLindex);
+	glPopMatrix();
+	glPushMatrix();//2
+		glTranslatef(x, y, z);
+		glRotatef(45, 0.0, 1.0, 0.0);
+		Lampara.prisma(5.0, 1.5, 0.0, lamp_tex.GLindex);
+	glPopMatrix();
+	glPushMatrix();//3
+		glTranslatef(x, y, z);
+		glRotatef(90, 0.0, 1.0, 0.0);
+		Lampara.prisma(5.0, 1.5, 0.0, lamp_tex.GLindex);
+	glPopMatrix();
+	glPushMatrix();//4
+		glTranslatef(x, y, z);
+		glRotatef(135, 0.0, 1.0, 0.0);
+		Lampara.prisma(5.0, 1.5, 0.0, lamp_tex.GLindex);
+	glPopMatrix();
+	glDisable(GL_ALPHA_TEST);
+	glEnable(GL_LIGHTING);
+}
 void display(void)   // Creamos la funcion donde se dibuja
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -632,8 +663,14 @@ void display(void)   // Creamos la funcion donde se dibuja
 	glPopMatrix();
 
 	glPopMatrix();
-		//arbol();
 		terreno();
+		arbol(-6.5, 3.5, -13.5);
+		arbol(6.5, 3.5, -13.5);
+		pino(-14, 3.5, 6);
+		pino(14, 3.5, 6);
+		lampara(5, 2.0, 16);
+		lampara(-5, 2.0, 16);
+
 	glPopMatrix();
 	
 	glutSwapBuffers();
